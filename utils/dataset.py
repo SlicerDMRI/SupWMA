@@ -1,12 +1,7 @@
 from __future__ import print_function
 import torch.utils.data as data
-import os
-import os.path
 import torch
 import numpy as np
-from tqdm import tqdm
-import json
-from plyfile import PlyData, PlyElement
 import h5py
 import sys
 sys.path.append('../')

@@ -1,9 +1,4 @@
 #!/bin/bash
-# Instructions
-# 1. Install WMA package (https://github.com/SlicerDMRI/whitematteranalysis).
-# 2. Istall 3D Slicer (https://www.slicer.org) and SlicerDMRI (http://dmri.slicer.org).
-# 2. Download `TrainedModels.zip` (https://github.com/SlicerDMRI/SupWMA/releases) to the current folder, and `tar -xzvf TrainedModel.zip`
-# 3. Download `TestData.zip` (https://github.com/SlicerDMRI/SupWMA/releases) to the current folder, and `tar -xzvf TestData.zip`
 
 # TODO: change to your Slicer and BRAINSFitCLI path
 Slicer=/home/victor/alarge/Softwares/Slicer-4.10.2-linux-amd64/Slicer

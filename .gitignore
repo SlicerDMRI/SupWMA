@@ -1,6 +1,7 @@
 # Custom
 *.idea
 *.pdf
+*.tar.gz
 /SupWMA_parcellation_results
 /TestData
 /TrainedModel
