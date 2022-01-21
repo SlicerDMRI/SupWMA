@@ -6,7 +6,7 @@ Compared to several state-of-the-art methods, SupWMA obtains a highly consistent
 
 The contents of this repository are released under an [MIT](LICENSE) license.
 
-![Overview](https://github.com/tengfeixue-victor/One-Shot-Animal-Video-Segmentation/blob/master/utils/overview.png?raw=true "Overview")
+![v4_SupWMA_Overview](https://user-images.githubusercontent.com/56477109/150537721-9619c9f6-98f0-4a02-ae4f-4794b99235fd.png)
 
 ## Dependencies
 
