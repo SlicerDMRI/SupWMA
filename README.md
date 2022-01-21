@@ -12,15 +12,15 @@ The contents of this repository are released under an [MIT](LICENSE) license.
 
 ## Dependencies:
 
-  `conda create --name SupWMA python=3.6.10
+  `conda create --name SupWMA python=3.6.10`
   
-  conda activate SupWMA
+  `conda activate SupWMA`
   
-  pip install conda install pytorch==1.7.0 torchvision==0.8.0 torchaudio==0.7.0 cudatoolkit=10.1 -c pytorch
+  `pip install conda install pytorch==1.7.0 torchvision==0.8.0 torchaudio==0.7.0 cudatoolkit=10.1 -c pytorch`
   
-  pip install git+https://github.com/SlicerDMRI/whitematteranalysis.git
+  `pip install git+https://github.com/SlicerDMRI/whitematteranalysis.git`
   
-  pip install h5py`
+  `pip install h5py`
 
 ## Usage
 1. Install 3D Slicer (https://www.slicer.org) and SlicerDMRI (http://dmri.slicer.org).
