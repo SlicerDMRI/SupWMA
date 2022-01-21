@@ -1,0 +1,29 @@
+# SupWMA
+
+This repository makes available the source code, pre-trained model and testing samples for the work, "One-shot Learning-based Animal Video Segmentation", which is accepted by 2022 IEEE International Symposium on Biomedical Imaging (ISBI) [1].
+
+Compared to several state-of-the-art methods, SupWMA obtains a highly consistent and accurate SWM parcellation result. In addition, the computational speed of SupWMA is much faster than other methods.
+
+The contents of this repository are released under an [MIT](LICENSE) license.
+
+![Overview](https://github.com/tengfeixue-victor/One-Shot-Animal-Video-Segmentation/blob/master/utils/overview.png?raw=true "Overview")
+
+## Dependencies
+
+  conda create --name SupWMA python=3.6.10
+  conda activate SupWMA
+  pip install conda install pytorch==1.7.0 torchvision==0.8.0 torchaudio==0.7.0 cudatoolkit=10.1 -c pytorch
+  pip install git+https://github.com/SlicerDMRI/whitematteranalysis.git
+  pip install h5py
+
+## Usage
+1. Install 3D Slicer (https://www.slicer.org) and SlicerDMRI (http://dmri.slicer.org).
+2. Download `TrainedModels.zip` (https://github.com/SlicerDMRI/SupWMA/releases) to `./`, and `tar -xzvf TrainedModel.zip`
+3. Download `TestData.zip` (https://github.com/SlicerDMRI/SupWMA/releases) to the `./`, and `tar -xzvf TestData.zip`
+4. sh SupWMA.sh
+
+## Results
+
+Vtp files of 198 superficial white matter clusters and one Non-SWM cluster are in `./SupWMA_parcellation_results/[subject_id]/[subject_id]_prediction_clusters_outlier_removed`. You can visualize them using 3D Slicer.
+
+![Selection_056](https://user-images.githubusercontent.com/56477109/150535586-28f30123-5fd1-4a9c-a81e-499d5abfd65d.png)
