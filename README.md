@@ -12,11 +12,11 @@ The contents of this repository are released under an [MIT](LICENSE) license.
 
 ## Dependencies:
 
-  conda create --name SupWMA python=3.6.10
+  `conda create --name SupWMA python=3.6.10
   conda activate SupWMA
   pip install conda install pytorch==1.7.0 torchvision==0.8.0 torchaudio==0.7.0 cudatoolkit=10.1 -c pytorch
   pip install git+https://github.com/SlicerDMRI/whitematteranalysis.git
-  pip install h5py
+  pip install h5py`
 
 ## Usage
 1. Install 3D Slicer (https://www.slicer.org) and SlicerDMRI (http://dmri.slicer.org).
@@ -26,6 +26,8 @@ The contents of this repository are released under an [MIT](LICENSE) license.
 
 ## Results
 
-Vtp files of 198 superficial white matter clusters and one Non-SWM cluster are in `./SupWMA_parcellation_results/[subject_id]/[subject_id]_prediction_clusters_outlier_removed`. You can visualize them using 3D Slicer.
+Vtp files of 198 superficial white matter clusters and one Non-SWM cluster are in `./SupWMA_parcellation_results/[subject_id]/[subject_id]_prediction_clusters_outlier_removed`. 
+
+You can visualize them using 3D Slicer.
 
 ![SWM_results](https://user-images.githubusercontent.com/56477109/150535586-28f30123-5fd1-4a9c-a81e-499d5abfd65d.png)
