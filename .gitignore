@@ -5,6 +5,7 @@
 /SupWMA_parcellation_results
 /TestData
 /TrainedModel
+/TrainData
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
