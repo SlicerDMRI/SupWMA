@@ -34,17 +34,17 @@ Train with our dataset
 1. Download `TrainData.zip` (https://github.com/SlicerDMRI/SupWMA/releases) to `./`, and `tar -xzvf TrainData.zip`
 2. Run `sh train_supwma_with_supcon.sh`
 
-## Train your custom dataset
+## Train using your custom dataset
 Your input streamline features should have size of (number_streamlines, number_points_per_streamline, 3), and size of labels is (number_streamlines, ). 
 
-Altough we have swm outliers class and other (dwm) class in our dataset, your dataset is not required to have these classes. For example, you can train your model using a dataset with 600 swm cluster classes. The training process will be the same. 
+Although we have swm outliers class and other (dwm) class in our dataset, your dataset is not necessary to have these classes. For example, you can train your model using a dataset with 600 swm cluster classes. The training process will be the same. 
 
 It is recommended to start training your custom dataset without contrastive learning, which is easier for debugging. 
 
-If you have already obtained reasonably good results, then you can use contrastive learning to further boost your performance.
+If you have already obtained reasonably good results, then you can use contrastive learning to boost your performance.
 
 ## Train/Val results
-We calculated the accuracy, precision, recall and f1 on 198 swm clusters and one "non-swm" cluster. One "non-swm" clusters consists of swm outlier clusters and others (dwm).
+We calculated the accuracy, precision, recall and f1 on 198 swm clusters and one "non-swm" cluster (199 classes). One "non-swm" clusters consists of swm outlier clusters and others (dwm).
 
 ## Test (SWM parcellation)
 1. Install 3D Slicer (https://www.slicer.org) and SlicerDMRI (http://dmri.slicer.org).
