@@ -21,6 +21,8 @@ The contents of this repository are released under an [MIT](LICENSE) license.
   `pip install git+https://github.com/SlicerDMRI/whitematteranalysis.git`
   
   `pip install h5py`
+  
+  `pip install sklearn`
 
 ## Train without contrastive leanring
 Train with our dataset
