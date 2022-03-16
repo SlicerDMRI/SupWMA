@@ -35,7 +35,7 @@ Train with our dataset (available upon request)
 2. Run `sh train_supwma_with_supcon.sh`
 
 ## Train using your custom dataset
-Your input streamline features should have size of (number_streamlines, number_points_per_streamline, 3), and size of labels is (number_streamlines, ). You can save/load features and labels using .h5 file.
+Your input streamline features should have size of (number_streamlines, number_points_per_streamline, 3), and size of labels is (number_streamlines, ). You can save/load features and labels using .h5 files.
 
 Although we have swm outliers class and other (dwm) class in our dataset, your dataset is not required to have these classes. For example, you can train your model using a dataset with 600 swm cluster classes. The training process will be the same. 
 
