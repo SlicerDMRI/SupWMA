@@ -24,14 +24,14 @@ The contents of this repository are released under an [MIT](LICENSE) license.
   
   `pip install sklearn`
 
-## Train without contrastive leanring
+## Train without contrastive learning
 Train with our dataset (available upon request)
-1. Download `TrainData.zip`  to `./`, and `tar -xzvf TrainData.zip`
+1. Download `TrainData.zip`  and `tar -xzvf TrainData.zip`
 2. Run `sh train_supwma_without_supcon.sh`
 
-## Train with contrastive leanring
+## Train with contrastive learning
 Train with our dataset (available upon request)
-1. Download `TrainData.zip`  to `./`, and `tar -xzvf TrainData.zip`
+1. Download `TrainData.zip` and `tar -xzvf TrainData.zip`
 2. Run `sh train_supwma_with_supcon.sh`
 
 ## Train using your custom dataset
