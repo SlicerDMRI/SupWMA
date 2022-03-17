@@ -6,6 +6,7 @@
 /TestData
 /TrainedModel
 /TrainData
+/ModelWeights
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

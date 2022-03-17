@@ -268,7 +268,7 @@ def calculate_average_metric(h5_base_path, num_average_files, metric_name, redis
 def gen_199_classify_report(labels_lst, predicted_lst, label_names, logger, out_path, metric_name):
     """Redistribute classes to 198 gt swm and 1 other"""
     label_names = label_names[:198]
-    label_names.append('all_outliers')
+    label_names.append('all_others')
     labels_lst = np.asarray(labels_lst)
     predicted_lst = np.asarray(predicted_lst)
     labels_lst_mask = np.where(labels_lst > 197)
@@ -287,68 +287,5 @@ def gen_199_classify_report(labels_lst, predicted_lst, label_names, logger, out_
     val_res['val_labels'] = labels_lst
     val_res['label_names'] = label_names
     val_res['classification_report'] = cls_report
-
-
-def calculate_entire_data_average_metric(h5_base_path, num_average_files, metric_name, stage1_model_path):
-    accuracy_lst = []
-    macro_precision_lst = []
-    macro_recall_lst = []
-    macro_f1_lst = []
-    logger = create_logger(h5_base_path, 'avg_entire_data')
-    logger.info('Calculate the average metric for entire data')
-    logger.info('The stage1 model is from {}'.format(stage1_model_path))
-    for i in range(num_average_files):
-        h5_path = os.path.join(h5_base_path, str(i+1), 'entire_data_validation_results_best_{}.h5'.format(metric_name))
-        results = h5py.File(h5_path, 'r')
-        labels_lst = results['val_labels']
-        predicted_lst = results['val_predictions']
-        label_names = results['label_names']
-        cls_report_dict = classification_report(y_true=labels_lst, y_pred=predicted_lst, digits=7,
-                                                target_names=label_names, output_dict=True)
-        accuracy = cls_report_dict['accuracy']
-        macro_precision = cls_report_dict['macro avg']['precision']
-        macro_recall = cls_report_dict['macro avg']['recall']
-        macro_f1 = cls_report_dict['macro avg']['f1-score']
-        accuracy_lst.append(accuracy)
-        macro_precision_lst.append(macro_precision)
-        macro_recall_lst.append(macro_recall)
-        macro_f1_lst.append(macro_f1)
-    _average_metric_base(accuracy_lst, macro_precision_lst, macro_recall_lst, macro_f1_lst, h5_base_path, num_average_files, metric_name, logger)
-
-
-def _average_metric_base(accuracy_lst, precision_lst, recall_lst, f1_lst, h5_base_path, num_average_files, metric_name, logger, weighted_results=False):
-    # TODO: replace this function with _mean_std_across_folds
-    """Calculate and log average results"""
-    accuracy_array = np.asarray(accuracy_lst)
-    precision_array = np.asarray(precision_lst)
-    recall_array = np.asarray(recall_lst)
-    f1_array = np.asarray(f1_lst)
-
-    avg_acc = str(Decimal(str(np.mean(accuracy_array) * 100)).quantize(Decimal('0.000'), rounding=ROUND_HALF_UP)) + "%"
-    avg_precision = str(Decimal(str(np.mean(precision_array) * 100)).quantize(Decimal('0.000'), rounding=ROUND_HALF_UP)) + "%"
-    avg_recall = str(Decimal(str(np.mean(recall_array) * 100)).quantize(Decimal('0.000'), rounding=ROUND_HALF_UP)) + "%"
-    avg_f1 = str(Decimal(str(np.mean(f1_array) * 100)).quantize(Decimal('0.000'), rounding=ROUND_HALF_UP)) + "%"
-
-    var_acc = str(Decimal(str(np.var(accuracy_array) * 100)).quantize(Decimal('0.000'), rounding=ROUND_HALF_UP)) + "%"
-    var_precision = str(Decimal(str(np.var(precision_array) * 100)).quantize(Decimal('0.000'), rounding=ROUND_HALF_UP)) + "%"
-    var_recall = str(Decimal(str(np.var(recall_array) * 100)).quantize(Decimal('0.000'), rounding=ROUND_HALF_UP)) + "%"
-    var_f1 = str(Decimal(str(np.var(f1_array) * 100)).quantize(Decimal('0.000'), rounding=ROUND_HALF_UP)) + "%"
-
-    logger.info('The number of experiment implementations is {}'.format(num_average_files))
-    logger.info('Use the weight with best {} for each fold'.format(metric_name))
-    logger.info('='*55)
-
-    if weighted_results:
-        logger.info('The average accuracy (other only) for {} is {} and variance is {}\n'.format(h5_base_path, avg_acc, var_acc))
-        logger.info('The average weighted precision (other only) for {} is {} and variance is {}\n'.format(h5_base_path, avg_precision, var_precision))
-        logger.info('The average weighted recall (other only) for {} is {} and variance is {}\n'.format(h5_base_path, avg_recall, var_recall))
-        logger.info('The average weighted f1 (other only) for {} is {} and variance is {}\n'.format(h5_base_path, avg_f1, var_f1))
-        logger.info('='*55)
-    else:
-        logger.info('The average accuracy for {} is {} and variance is {}\n'.format(h5_base_path, avg_acc, var_acc))
-        logger.info('The average macro precision for {} is {} and variance is {}\n'.format(h5_base_path, avg_precision, var_precision))
-        logger.info('The average macro recall for {} is {} and variance is {}\n'.format(h5_base_path, avg_recall, var_recall))
-        logger.info('The average macro f1 for {} is {} and variance is {}\n'.format(h5_base_path, avg_f1, var_f1))
-        logger.info('='*55)
 
 

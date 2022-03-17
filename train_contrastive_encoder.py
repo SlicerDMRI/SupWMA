@@ -211,7 +211,7 @@ if __name__ == '__main__':
 
     # Generate .pickle file of encoder parameters
     encoder_params_dict = {'contrastive_method': args.contrastive_method, 'head_name': args.head_name, 'encoder_feat_num': args.encoder_feat_num,
-                           'temperature': args.temperature, 'fold_lst': fold_lst}
+                           'temperature': args.temperature, 'fold_lst': fold_lst, 'num_class': num_classes}
 
     with open(os.path.join(args.out_path_base, 'encoder_params.pickle'), 'wb') as f:
         pickle.dump(encoder_params_dict, f, protocol=pickle.HIGHEST_PROTOCOL)

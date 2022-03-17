@@ -14,9 +14,8 @@ from utils.dataset import ORGDataset
 from utils.model_supcon import PointNet_SupCon, PointNet_Classifier
 from utils.logger import create_logger
 from utils.metrics_plots import classify_report, per_class_metric, process_curves
-from utils.metrics_plots import calculate_prec_recall_f1, best_swap, save_best_weights, gen_199_classify_report
+from utils.metrics_plots import calculate_prec_recall_f1, best_swap, save_best_weights, gen_199_classify_report, calculate_average_metric
 from utils.funcs import fix_seed, unify_path, makepath
-from eval import kfold_evaluate_one_stage_contrastive_model
 
 # GPU check
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -217,7 +216,6 @@ if __name__ == '__main__':
                         help='Save trained models')
 
     # evaluation params
-    parser.add_argument('--input_eval_data_path', type=str, default='./', help='Input entire data for evaluation ')
     parser.add_argument('--best_metric', type=str, default='f1', help='evaluation metric')
     parser.add_argument('--supcon_epoch', type=int, default=150, required=True, help='The epoch of encoder model')
 
@@ -250,7 +248,6 @@ if __name__ == '__main__':
     script_name = '<train>'
 
     args.input_path = unify_path(args.input_path)
-    args.input_eval_data_path = unify_path(args.input_eval_data_path)
     args.out_path_base = unify_path(args.out_path_base)
 
     assert 'encoder' + str(args.supcon_epoch) == str(args.out_path_base.split('/')[-1].split('epoch')[0])
@@ -281,8 +278,7 @@ if __name__ == '__main__':
         num_classes, train_data_size, val_data_size = load_data()
 
         # encoder setting and parameters must be keep the same as train_contrastive_backup.py
-        supcon_model = PointNet_SupCon(head=encoder_params['head_name'],
-                                       feat_dim=encoder_params['encoder_feat_num'])
+        supcon_model = PointNet_SupCon(head=encoder_params['head_name'], feat_dim=encoder_params['encoder_feat_num'])
 
         # encoder weight path base
         args.encoder_weight_path_base = os.path.join(*args.out_path_base.split('/')[:-1])
@@ -320,5 +316,6 @@ if __name__ == '__main__':
     # clean the logger
     logger.handlers.clear()
 
-    # evaluation
-    kfold_evaluate_one_stage_contrastive_model(encoder_params, args, device, 'evaluate_net')
+    # average metric
+    num_files = len(fold_lst)
+    calculate_average_metric(args.out_path_base, num_files, args.best_metric, args.redistribute_class)
