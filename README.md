@@ -1,6 +1,6 @@
 # SupWMA
 
-This repository releases the source code, pre-trained model and testing sample for the work, "SupWMA: consistent and efficient tractography parcellation of superficial white matter with deep learning," which is accepted by the 2022 IEEE International Symposium on Biomedical Imaging (ISBI).
+This repository releases the source code, pre-trained model and testing sample for the work, "SupWMA: consistent and efficient tractography parcellation of superficial white matter with deep learning," which is accepted by the ISBI 2022 (finalist for best paper award).
 
 Compared to several state-of-the-art methods, SupWMA obtains a highly consistent and accurate SWM parcellation result. In addition, the computational speed of SupWMA is much faster than other methods.
 
