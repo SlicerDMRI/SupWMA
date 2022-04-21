@@ -28,6 +28,6 @@ python train_contrastive_encoder.py --eval_fold_zero --input_path ${input_path} 
 python train_classifier.py --input_path ${input_path} --epoch ${cls_epoch} --out_path_base ${encoder_path}${classifier_path} --supcon_epoch ${supcon_epoch} --opt Adam --train_batch_size 1024 --val_batch_size 4096 --lr 1e-3 --weight_decay 0 --scheduler wucd --T_0 10 --T_mult 2 --redistribute_class
 
 
-## Five fold cross-validation
-#python train_contrastive_encoder.py --input_path ${input_path} --epoch ${contra_epoch} --out_path_base ${encoder_path} --save_step ${save_step} --opt ${opt} --momentum ${momentum} --lr ${contra_lr} --weight_decay ${wd} --train_batch_size ${train_batch_size} --scheduler ${scheduler}  --T_0 ${T_0} --T_mult ${T_mult} --head_name mlp --encoder_feat_num 128 --temperature ${tmp}
-#python train_classifier.py --input_path ${input_path} --epoch ${cls_epoch} --out_path_base ${encoder_path}${classifier_path} --supcon_epoch ${supcon_epoch} --opt Adam --train_batch_size 1024 --val_batch_size 4096 --lr 1e-3 --weight_decay 0 --scheduler wucd --T_0 10 --T_mult 2 --redistribute_class
+# Five fold cross-validation
+python train_contrastive_encoder.py --input_path ${input_path} --epoch ${contra_epoch} --out_path_base ${encoder_path} --save_step ${save_step} --opt ${opt} --momentum ${momentum} --lr ${contra_lr} --weight_decay ${wd} --train_batch_size ${train_batch_size} --scheduler ${scheduler}  --T_0 ${T_0} --T_mult ${T_mult} --head_name mlp --encoder_feat_num 128 --temperature ${tmp}
+python train_classifier.py --input_path ${input_path} --epoch ${cls_epoch} --out_path_base ${encoder_path}${classifier_path} --supcon_epoch ${supcon_epoch} --opt Adam --train_batch_size 1024 --val_batch_size 4096 --lr 1e-3 --weight_decay 0 --scheduler wucd --T_0 10 --T_mult 2 --redistribute_class
