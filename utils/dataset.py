@@ -14,7 +14,6 @@ class SupConDataset(data.Dataset):
     # TODO: Feel free to change the data loading module to fit your data.
     def __init__(self, root, logger, num_fold=1, k=5, split='train'):
         self.root = root
-        self.type = type
         self.split = split
         self.num_fold = num_fold
         self.k = k
@@ -54,7 +53,6 @@ class SupConDataset(data.Dataset):
 
         # label names list
         self.label_names = [*label_h5['label_names']]
-        self.logger.info('Load {} data from {} dataset'.format(self.split, self.type))
         self.logger.info('The size of feature for {} is {}'.format(self.split, self.features.shape))
 
     def __getitem__(self, index):
@@ -91,7 +89,6 @@ class ORGDataset(data.Dataset):
         # TODO: Feel free to change the data loading module to fit your data.
         # TODO: I saved my data into .h5 file, the size of "features" is [num_samples, num_points, 3], and the size of "labels" is [num_samples, ]
         self.root = root
-        self.type = type
         self.split = split
         self.num_fold = num_fold
         self.k = k
@@ -133,7 +130,6 @@ class ORGDataset(data.Dataset):
 
         # label names list
         self.label_names = [*label_h5['label_names']]
-        self.logger.info('Load {} data from {} dataset'.format(self.split, self.type))
         self.logger.info('The size of feature for {} is {}'.format(self.split, self.features.shape))
         # if split == 'val':
         #     print('The label names are: {}'.format(self.label_names))
