@@ -36,9 +36,7 @@ def load_test_data():
 
 def load_model():
     # load model
-    encoder = PointNet_SupCon(head=encoder_params['head_name'], feat_dim=encoder_params['encoder_feat_num'],
-                              feature_transform=encoder_params['feature_transform'],
-                              first_feature_transform=not encoder_params['not_first_feature_transform']).to(device)
+    encoder = PointNet_SupCon(head=encoder_params['head_name'], feat_dim=encoder_params['encoder_feat_num']).to(device)
     print('{} use first feature transform for encoder'.format(not encoder_params['not_first_feature_transform']))
     classifer = PointNet_Classifier(num_classes=encoder_params['stage2_num_class']).to(device)
 
@@ -78,7 +76,7 @@ def test_net():
                     encoder_net.eval(), classifer_net.eval()
 
                 # enc-cls
-                features, _, _, critical_point_idx = encoder_net.encoder(points)
+                features = encoder_net.encoder(points)
                 pred = classifer_net(features)
                 _, pred_idx = torch.max(pred, dim=1)
                 pred_idx = torch.where(pred_idx < 198, pred_idx, torch.tensor(198).to(device))
@@ -185,6 +183,7 @@ if __name__ == "__main__":
 
     with open(os.path.join(args.weight_path, 'enc', 'encoder_params.pickle'), 'rb') as f:
         encoder_params = pickle.load(f)
+        print(encoder_params)
         f.close()
 
     # load test data
