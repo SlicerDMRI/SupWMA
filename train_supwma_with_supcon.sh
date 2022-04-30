@@ -1,3 +1,5 @@
+#!/bin/bash
+
 ## SupWMA
 opt='Adam'
 wd=0

@@ -1,3 +1,5 @@
+#!/bin/bash
+
 ## SupWMA without contrastive learning
 input_data=198ol_602other  # 198gt-swm + 198ol-swm + 602other (198 swm clusters, 198 swm outliers, 602 others)
 input_path=./TrainData/198gtswm_${input_data}/h5_np15
