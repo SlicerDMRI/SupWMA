@@ -59,3 +59,31 @@ Vtp files of 198 superficial white matter clusters and one Non-SWM cluster are i
 You can visualize them using 3D Slicer.
 
 ![SWM_results](https://user-images.githubusercontent.com/56477109/150535586-28f30123-5fd1-4a9c-a81e-499d5abfd65d.png)
+
+# References
+
+**Please cite the following papers for using the code and/or the training data :**
+  
+  
+    Xue, Tengfei, Fan Zhang, Chaoyi Zhang, Yuqian Chen, Yang Song, Nikos Makris, Yogesh Rathi, Weidong Cai, and Lauren J. O’Donnell. 
+    Supwma: Consistent and Efficient Tractography Parcellation of Superficial White Matter with Deep Learning.
+    In 2022 IEEE 19th International Symposium on Biomedical Imaging (ISBI), IEEE, 2022.
+
+    Zhang, F., Wu, Y., Norton, I., Rathi, Y., Makris, N., O'Donnell, LJ. 
+    An anatomically curated fiber clustering white matter atlas for consistent white matter tract parcellation across the lifespan. 
+    NeuroImage, 2018 (179): 429-447
+
+**For projects using Slicer and SlicerDMRI please also include the following text (or similar) and citations:**
+
+* How to cite the [Slicer platform](http://wiki.slicer.org/slicerWiki/index.php/CitingSlicer)
+* An example of how to cite SlicerDMRI (modify the first part of the sentence according to your use case):
+
+    "We performed diffusion MRI tractography and/or analysis and/or visualization in 3D Slicer (www.slicer.org) via the SlicerDMRI project (dmri.slicer.org) (Norton et al. 2017)."
+    
+    Fan Zhang, Thomas Noh, Parikshit Juvekar, Sarah F Frisken, Laura Rigolo, Isaiah Norton, Tina Kapur, Sonia Pujol, William Wells III, Alex Yarmarkovich, Gordon Kindlmann, Demian Wassermann, Raul San Jose Estepar, Yogesh Rathi, Ron Kikinis, Hans J Johnson, Carl-Fredrik Westin, Steve Pieper, Alexandra J Golby, Lauren J O’Donnell. 
+    SlicerDMRI: Diffusion MRI and Tractography Research Software for Brain Cancer Surgery Planning and Visualization. 
+    JCO Clinical Cancer Informatics 4, e299-309, 2020.
+
+    Isaiah Norton, Walid Ibn Essayed, Fan Zhang, Sonia Pujol, Alex Yarmarkovich, Alexandra J. Golby, Gordon Kindlmann, Demian Wassermann, Raul San Jose Estepar, Yogesh Rathi, Steve Pieper, Ron Kikinis, Hans J. Johnson, Carl-Fredrik Westin and Lauren J. O'Donnell. 
+    SlicerDMRI: Open Source Diffusion MRI Software for Brain Cancer Research. Cancer Research 77(21), e101-e103, 2017.
+
