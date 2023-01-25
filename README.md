@@ -1,5 +1,6 @@
 # Update
-<a href="https://www.sciencedirect.com/science/article/abs/pii/S1361841523000208" target="_blank">[Our new work]</a> was accepted by Medical Image Analysis. Code will be updated soon!
+[Our new work](https://www.sciencedirect.com/science/article/abs/pii/S1361841523000208) was accepted by Medical Image Analysis. Code will be updated soon!
+
 
 # Superficial White Matter Analysis (SupWMA)
 
