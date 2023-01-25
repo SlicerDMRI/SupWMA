@@ -1,4 +1,7 @@
-# SupWMA
+# Update
+[Our new work](https://www.sciencedirect.com/science/article/abs/pii/S1361841523000208) was accepted by Medical Image Analysis. Code will be updated soon!
+
+# Superficial White Matter Analysis (SupWMA)
 
 This repository releases the source code, pre-trained model and testing sample for the work, "SupWMA: consistent and efficient tractography parcellation of superficial white matter with deep learning," which is accepted by the ISBI 2022 (finalist for best paper award).
 
@@ -63,9 +66,12 @@ You can visualize them using 3D Slicer.
 # References
 
 **Please cite the following papers for using the code and/or the training data :**
+    
+    Tengfei Xue, Fan Zhang, Chaoyi Zhang, Yuqian Chen, Yang Song, Alexandra J. Golby, Nikos Makris, Yogesh Rathi, Weidong Cai, Lauren J. O’Donnell,
+    Superficial white matter analysis: An efficient point-cloud-based deep learning framework with supervised contrastive learning for consistent        
+    tractography parcellation across populations and dMRI acquisitions, Medical Image Analysis, 2023, https://doi.org/10.1016/j.media.2023.102759.
   
-  
-    Xue, Tengfei, Fan Zhang, Chaoyi Zhang, Yuqian Chen, Yang Song, Nikos Makris, Yogesh Rathi, Weidong Cai, and Lauren J. O’Donnell. 
+    Tengfei Xue, Fan Zhang, Chaoyi Zhang, Yuqian Chen, Yang Song, Nikos Makris, Yogesh Rathi, Weidong Cai, and Lauren J. O’Donnell. 
     Supwma: Consistent and Efficient Tractography Parcellation of Superficial White Matter with Deep Learning.
     In 2022 IEEE 19th International Symposium on Biomedical Imaging (ISBI), IEEE, 2022.
 
