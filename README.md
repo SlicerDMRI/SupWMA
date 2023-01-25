@@ -68,9 +68,7 @@ You can visualize them using 3D Slicer.
 
 **Please cite the following papers for using the code and/or the training data :**
     
-    Tengfei Xue, Fan Zhang, Chaoyi Zhang, Yuqian Chen, Yang Song, Alexandra J. Golby, Nikos Makris, Yogesh Rathi, Weidong Cai, Lauren J. O’Donnell,
-    Superficial white matter analysis: An efficient point-cloud-based deep learning framework with supervised contrastive learning for consistent        
-    tractography parcellation across populations and dMRI acquisitions, Medical Image Analysis, 2023, https://doi.org/10.1016/j.media.2023.102759.
+    Tengfei Xue, Fan Zhang, Chaoyi Zhang, Yuqian Chen, Yang Song, Alexandra J. Golby, Nikos Makris, Yogesh Rathi, Weidong Cai, and Lauren J. O’Donnell. 2023. “Superficial White Matter Analysis: An Efficient Point-Cloud-Based Deep Learning Framework with Supervised Contrastive Learning for Consistent Tractography Parcellation across Populations and dMRI Acquisitions.” Medical Image Analysis 85: 102759.
   
     Tengfei Xue, Fan Zhang, Chaoyi Zhang, Yuqian Chen, Yang Song, Nikos Makris, Yogesh Rathi, Weidong Cai, and Lauren J. O’Donnell. 
     Supwma: Consistent and Efficient Tractography Parcellation of Superficial White Matter with Deep Learning.
