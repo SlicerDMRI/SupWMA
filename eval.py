@@ -83,15 +83,6 @@ def contrastive_two_stage_eval_net(stage1_params, encoder_params, args, stage1_n
             if stage1_swm_mask.shape[0] != 0:
                 swm_points = points[stage1_swm_mask, :, :]
                 features = stage2_encoder_net.encoder(swm_points)
-                if args.analy_fiber_representation:
-                    stage2_encoder_feat = features.cpu().detach()
-                    test_swm_labels_lst.extend(labels[stage1_swm_mask].cpu().detach())
-                    if encoder_swm_features_array is None:
-                        encoder_swm_features_array = stage2_encoder_feat
-                    else:
-                        encoder_swm_features_array = np.concatenate((encoder_swm_features_array, stage2_encoder_feat),
-                                                                    axis=0)
-
                 stage2_pred = stage2_classifer_net(features)
                 _, stage2_pred_idx = torch.max(stage2_pred, dim=1)
                 pred_idx[stage1_swm_mask] = torch.where(stage2_pred_idx < 198, stage2_pred_idx,
