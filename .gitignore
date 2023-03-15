@@ -3,9 +3,12 @@
 *.pdf
 *.tar.gz
 /SupWMA_parcellation_results
+/SupWMA-TwoStage_parcellation_results
 /TestData
 /TrainedModel
+/TrainedModel_TwoStage
 /TrainData
+/TrainData_TwoStage
 /ModelWeights
 *.json
 
