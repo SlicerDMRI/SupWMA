@@ -11,8 +11,8 @@ s1_path="./ModelWeights/supwma_stage1_weights"
 input_data=198swm_602other
 input_path=./TrainData_TwoStage/stage1/${input_data}/h5_np15
 
-# only eval on fold zero
-python train_s1.py --eval_fold_zero --input_path ${input_path} --epoch ${s1_epoch} --out_path_base ${s1_path} --opt ${s1_opt} --train_batch_size 1024 --val_batch_size 4096 --lr ${s1_lr} --weight_decay ${s1_wd} --scheduler wucd --T_0 10 --T_mult 2
+# # only eval on fold zero
+# python train_s1.py --eval_fold_zero --input_path ${input_path} --epoch ${s1_epoch} --out_path_base ${s1_path} --opt ${s1_opt} --train_batch_size 1024 --val_batch_size 4096 --lr ${s1_lr} --weight_decay ${s1_wd} --scheduler wucd --T_0 10 --T_mult 2
 
-# # 5-fold cross validation
-# python train_s1.py --input_path ${input_path} --epoch ${s1_epoch} --out_path_base ${s1_path} --opt ${s1_opt} --train_batch_size 1024 --val_batch_size 4096 --lr ${s1_lr} --weight_decay ${s1_wd} --scheduler wucd --T_0 10 --T_mult 2
+# 5-fold cross validation
+python train_s1.py --input_path ${input_path} --epoch ${s1_epoch} --out_path_base ${s1_path} --opt ${s1_opt} --train_batch_size 1024 --val_batch_size 4096 --lr ${s1_lr} --weight_decay ${s1_wd} --scheduler wucd --T_0 10 --T_mult 2
