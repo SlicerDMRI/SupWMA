@@ -1,3 +1,5 @@
+from utils.logger import create_logger
+
 import whitematteranalysis as wma
 import numpy as np
 
@@ -9,10 +11,13 @@ import pickle
 
 import torch
 import torch.nn.parallel
+import torch.optim as optim
 import torch.utils.data
 
+from utils.model import PointNetCls
 from utils.model_supcon import PointNet_SupCon, PointNet_Classifier
 from utils.dataset import TestDataset
+from utils.metrics_plots import classify_report
 
 
 def load_test_data():
@@ -35,18 +40,21 @@ def load_test_data():
 
 
 def load_model():
-    # load model
-    encoder = PointNet_SupCon(head=encoder_params['head_name'], feat_dim=encoder_params['encoder_feat_num']).to(device)
-    print('{} use first feature transform for encoder'.format(not encoder_params['not_first_feature_transform']))
-    classifer = PointNet_Classifier(num_classes=encoder_params['stage2_num_class']).to(device)
+    """load stage 1 and stage 2 models"""
+    stage1_model = PointNetCls(k=stage1_params['stage1_num_class']).to(device)
+
+    stage2_encoder = PointNet_SupCon(head=encoder_params['head_name'], feat_dim=encoder_params['encoder_feat_num']).to(device)
+
+    stage2_classifer = PointNet_Classifier(num_classes=encoder_params['stage2_num_class']).to(device)
 
     # load weights
-    encoder_weight_path = os.path.join(args.weight_path, 'enc', 'epoch_{}_model.pth'.format(args.supcon_epoch))
-    encoder.load_state_dict(torch.load(encoder_weight_path))
-    classifier_weight_path = os.path.join(args.weight_path, 'cls', 'best_{}_model.pth'.format(args.best_metric))
-    classifer.load_state_dict(torch.load(classifier_weight_path))
-
-    return encoder, classifer
+    stage1_weight_path = os.path.join(args.weight_path, 's1_cls', 'best_{}_model.pth'.format(args.best_metric))
+    stage1_model.load_state_dict(torch.load(stage1_weight_path))
+    encoder_weight_path = os.path.join(args.weight_path, 's2_encoder', 'epoch_{}_model.pth'.format(args.supcon_epoch))
+    stage2_encoder.load_state_dict(torch.load(encoder_weight_path))
+    classifier_weight_path = os.path.join(args.weight_path, 's2_cls', 'best_{}_model.pth'.format(args.best_metric))
+    stage2_classifer.load_state_dict(torch.load(classifier_weight_path))
+    return stage1_model, stage2_encoder, stage2_classifer
 
 
 def test_net():
@@ -57,7 +65,8 @@ def test_net():
     print(script_name, 'Start multi-cluster prediction.')
 
     output_prediction_mask_path = os.path.join(args.out_path, args.out_prefix + '_test_prediction_mask.h5')
-    encoder_net, classifer_net = load_model()
+    output_prediction_report_path = os.path.join(args.out_path, args.out_prefix + '_test_prediction_report.h5')
+    stage1_net, stage2_encoder_net, stage2_classifer_net = load_model()
     if not os.path.exists(output_prediction_mask_path):
         # Load model
         start_time = time.time()
@@ -72,14 +81,27 @@ def test_net():
                     points, labels = points.to(device), labels.to(device)
                 else:
                     points = points.to(device)
-                encoder_net, classifer_net = \
-                    encoder_net.eval(), classifer_net.eval()
+                stage1_net, stage2_encoder_net, stage2_classifer_net = \
+                    stage1_net.eval(), stage2_encoder_net.eval(), stage2_classifer_net.eval()
 
-                # enc-cls
-                features = encoder_net.encoder(points)
-                pred = classifer_net(features)
-                _, pred_idx = torch.max(pred, dim=1)
-                pred_idx = torch.where(pred_idx < 198, pred_idx, torch.tensor(198).to(device))
+                # initialization
+                tmp = torch.tensor(-1).to(device)
+                pred_idx = tmp.repeat(points.shape[0])
+                # stage 1
+                stage1_pred = stage1_net(points)
+                _, stage1_pred_idx = torch.max(stage1_pred, dim=1)
+                stage1_swm_mask = torch.where(stage1_pred_idx < stage1_params['num_swm_stage1'])[0]
+                stage1_other_mask = torch.where(stage1_pred_idx >= stage1_params['num_swm_stage1'])[0]
+                pred_idx[stage1_other_mask] = torch.tensor(198).to(device)
+
+                # stage 2
+                if stage1_swm_mask.shape[0] != 0:
+                    swm_points = points[stage1_swm_mask, :, :]
+                    features = stage2_encoder_net.encoder(swm_points)
+                    stage2_pred = stage2_classifer_net(features)
+                    _, stage2_pred_idx = torch.max(stage2_pred, dim=1)
+                    pred_idx[stage1_swm_mask] = torch.where(stage2_pred_idx < 198, stage2_pred_idx, torch.tensor(198).to(device))
+                
                 # entire data
                 if args.input_label_path is not None:
                     # for classification report
@@ -89,13 +111,15 @@ def test_net():
                     # for calculating test weighted and macro metrics
                     labels = labels.cpu().detach().numpy().tolist()
                     test_labels_lst.extend(labels)
-
+                assert torch.sum(pred_idx == tmp) == 0
                 pred_idx = pred_idx.cpu().detach().numpy().tolist()
                 test_predicted_lst.extend(pred_idx)
-
         end_time = time.time()
         print('The total time of prediction is:{} s'.format(round((end_time - start_time), 4)))
         print('The test sample size is: ', len(test_predicted_lst))
+        if args.input_label_path is not None:
+            classify_report(test_labels_lst, test_predicted_lst, label_names, logger, output_prediction_report_path, 'test')
+
         test_prediction_lst_h5 = h5py.File(output_prediction_mask_path, "w")
         test_prediction_lst_h5['complete_pred_test'] = test_predicted_lst
         test_predicted_array = np.asarray(test_predicted_lst)
@@ -152,38 +176,36 @@ if __name__ == "__main__":
         device = torch.device("cuda:0")
 
     # Parse arguments
-    parser = argparse.ArgumentParser(description="Testing using a deep learning model.",
-                                     epilog="Referenced from https://github.com/zhangfanmark/DeepWMA"
-                                            "Tengfei Xue txue4133@uni.sydney.edu.au")
+    parser = argparse.ArgumentParser(description="Testing on real data using Two-stage SupWMA",
+                                     epilog="by Tengfei Xue txue4133@uni.sydney.edu.au")
     parser.add_argument('--weight_path', type=str, help='pretrained network model')
     parser.add_argument('--feat_path', type=str, help='Input cluster feature data as an h5 file.')
-    parser.add_argument('--out_path', type=str,
-                        help='The output directory should be a new empty directory. It will be created if needed.')
+    parser.add_argument('--out_path', type=str, help='The output directory should be a new empty directory. It will be created if needed.')
     parser.add_argument('--label_names', type=str, help='label names in the trained model as an h5 file.')
     parser.add_argument('--input_label_path', type=str, help='Input ground truth label as an h5 file.')
     parser.add_argument('--out_prefix', type=str, help='A prefix string of all output files.')
-    parser.add_argument('--tractography_path', type=str,
-                        help='Tractography data as a vtkPolyData file. If given, prediction will output clusters')
+    parser.add_argument('--tractography_path', type=str, help='Tractography data as a vtkPolyData file. If given, prediction will output clusters')
 
     parser.add_argument('--num_workers', type=int, help='number of data loading workers', default=4)
     parser.add_argument('--test_batch_size', type=int, default=6144, help='batch size')
-    parser.add_argument('--feature_transform', default=False, action='store_true', help="use feature transform")
 
     parser.add_argument('--best_metric', type=str, default='f1', help='evaluation metric')
     parser.add_argument('--supcon_epoch', type=int, default=100, help='The epoch of encoder model')
-    parser.add_argument('--analy_critical_points', default=False, action='store_true',
-                        help='analyze critical points')
 
     args = parser.parse_args()
-    script_name = '<test>'
+    script_name = '<test-TwoStage>'
+
+    logger = create_logger(args.out_path)
 
     if not os.path.exists(args.out_path):
         print(script_name, "Output directory", args.out_path, "does not exist, creating it.")
         os.makedirs(args.out_path)
 
-    with open(os.path.join(args.weight_path, 'enc', 'encoder_params.pickle'), 'rb') as f:
+    with open(os.path.join(args.weight_path, 's1_cls', 'stage1_params.pickle'), 'rb') as f:
+        stage1_params = pickle.load(f)
+        f.close()
+    with open(os.path.join(args.weight_path, 's2_encoder', 'encoder_params.pickle'), 'rb') as f:
         encoder_params = pickle.load(f)
-        print(encoder_params)
         f.close()
 
     # load test data
