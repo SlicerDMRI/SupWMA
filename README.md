@@ -1,7 +1,8 @@
 # Overview
-This repository has two branches: `master` and `MedIA`. `master` branch is for our work at [ISBI 2022](https://arxiv.org/abs/2201.12528) (finalist for best paper award). `MedIA` branch is for our work at [Medical Image Analysis](https://arxiv.org/abs/2207.08975).
-* Superficial white matter parcellation on real data: if you want to use our pre-trained model to parcellate your own data, please use [SupWMA_TwoStage.sh](https://github.com/SlicerDMRI/SupWMA/blob/MedIA/SupWMA_TwoStage.sh) in `MedIA` branch. It provides the two-stage SupWMA model trained with contrastive learning.
-* Train your own model: You can start with `master` branch, where it provides code for one-stage training with and without contrastive learning. If you are also interested in two-stage training, you can check training code in `MedIA` branch. 
+*You are on master branch*
+This repository has two branches: **master** and **MedIA**. **master** branch is for our work at [ISBI 2022](https://arxiv.org/abs/2201.12528) (finalist for best paper award). **MedIA** branch is for our work at [Medical Image Analysis](https://arxiv.org/abs/2207.08975).
+* Superficial white matter parcellation on real data: if you want to use our pre-trained model to parcellate your own data, please use [SupWMA_TwoStage.sh](https://github.com/SlicerDMRI/SupWMA/blob/MedIA/SupWMA_TwoStage.sh) in **MedIA** branch. It provides the two-stage SupWMA model trained with contrastive learning.
+* Train your own model: You can start with **master** branch, where it provides code for one-stage training with and without contrastive learning. If you are also interested in two-stage training, you can check training code in **MedIA** branch.
 
 # Superficial White Matter Analysis (SupWMA)
 
@@ -52,7 +53,7 @@ If you have already obtained reasonably good results, then you can use contrasti
 We calculated the accuracy, precision, recall and f1 on 198 swm clusters and one "non-swm" cluster (199 classes). One "non-swm" cluster consists of swm outlier clusters and others (dwm).
 
 ## Test (SWM parcellation)
-Highly recommended to use the pre-trained model in `MedIA` branch (two-stage with contrastive learning) to parcellate your own data.
+Highly recommended to use the pre-trained model in **MedIA** branch (two-stage with contrastive learning) to parcellate your own data.
 1. Install 3D Slicer (https://www.slicer.org) and SlicerDMRI (http://dmri.slicer.org).
 2. Download `TrainedModels.zip` (https://github.com/SlicerDMRI/SupWMA/releases) to `./`, and `tar -xzvf TrainedModel.zip`
 3. Download `TestData.zip` (https://github.com/SlicerDMRI/SupWMA/releases) to the `./`, and `tar -xzvf TestData.zip`
