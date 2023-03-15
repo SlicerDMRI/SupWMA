@@ -253,7 +253,7 @@ def calculate_average_metric(h5_base_path, num_average_files, metric_name, redis
                                                 target_names=label_names, output_dict=True)
 
         # calculate mean and standard deviation across clusters for each fold
-        # metric_results_lst: [accuracy, macro_precision, std_precision, macro_recall, std_recall, macro_f1, std_f1]
+        # results_per_fol: [accuracy, macro_precision, std_precision, macro_recall, std_recall, macro_f1, std_f1]
         results_per_fold = _metric_across_clusters(cls_report_dict, label_names)
         accuracy_array[i] = results_per_fold[0]
         precision_array[i, :] = [results_per_fold[1], results_per_fold[2]]
@@ -291,10 +291,10 @@ def gen_199_classify_report(labels_lst, predicted_lst, label_names, logger, out_
     
 def calculate_entire_data_average_metric(h5_base_path, num_average_files, metric_name, stage1_model_path):
     """Use in stage 2 to evaluate results for all 1 million streamlines"""
-    accuracy_lst = []
-    macro_precision_lst = []
-    macro_recall_lst = []
-    macro_f1_lst = []
+    accuracy_array = np.zeros(num_average_files)
+    precision_array = np.zeros((num_average_files, 2))
+    recall_array = np.zeros((num_average_files, 2))
+    f1_array = np.zeros((num_average_files, 2))
     logger = create_logger(h5_base_path, 'avg_entire_data')
     logger.info('Calculate the average metric for entire data')
     logger.info('The stage1 model is from {}'.format(stage1_model_path))
@@ -306,14 +306,17 @@ def calculate_entire_data_average_metric(h5_base_path, num_average_files, metric
         label_names = results['label_names']
         cls_report_dict = classification_report(y_true=labels_lst, y_pred=predicted_lst, digits=7,
                                                 target_names=label_names, output_dict=True)
-        accuracy = cls_report_dict['accuracy']
-        macro_precision = cls_report_dict['macro avg']['precision']
-        macro_recall = cls_report_dict['macro avg']['recall']
-        macro_f1 = cls_report_dict['macro avg']['f1-score']
-        accuracy_lst.append(accuracy)
-        macro_precision_lst.append(macro_precision)
-        macro_recall_lst.append(macro_recall)
-        macro_f1_lst.append(macro_f1)
-    _mean_std_across_folds(accuracy_lst, macro_precision_lst, macro_recall_lst, macro_f1_lst, h5_base_path, num_average_files, metric_name, logger)
+        
+        # calculate mean and standard deviation across clusters for each fold
+        # results_per_fol: [accuracy, macro_precision, std_precision, macro_recall, std_recall, macro_f1, std_f1]
+        results_per_fold = _metric_across_clusters(cls_report_dict, label_names)
+        accuracy_array[i] = results_per_fold[0]
+        precision_array[i, :] = [results_per_fold[1], results_per_fold[2]]
+        recall_array[i, :] = [results_per_fold[3], results_per_fold[4]]
+        f1_array[i, :] = [results_per_fold[5], results_per_fold[6]]
+
+    logger.info('The number of classes is {}'.format(len(label_names)))
+    _mean_std_across_folds(accuracy_array, precision_array, recall_array, f1_array,
+                           h5_base_path, num_average_files, metric_name, logger)
     
 
