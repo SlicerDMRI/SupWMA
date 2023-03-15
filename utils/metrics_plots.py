@@ -287,5 +287,33 @@ def gen_199_classify_report(labels_lst, predicted_lst, label_names, logger, out_
     val_res['val_labels'] = labels_lst
     val_res['label_names'] = label_names
     val_res['classification_report'] = cls_report
-
+    
+    
+def calculate_entire_data_average_metric(h5_base_path, num_average_files, metric_name, stage1_model_path):
+    """Use in stage 2 to evaluate results for all 1 million streamlines"""
+    accuracy_lst = []
+    macro_precision_lst = []
+    macro_recall_lst = []
+    macro_f1_lst = []
+    logger = create_logger(h5_base_path, 'avg_entire_data')
+    logger.info('Calculate the average metric for entire data')
+    logger.info('The stage1 model is from {}'.format(stage1_model_path))
+    for i in range(num_average_files):
+        h5_path = os.path.join(h5_base_path, str(i+1), 'entire_data_validation_results_best_{}.h5'.format(metric_name))
+        results = h5py.File(h5_path, 'r')
+        labels_lst = results['val_labels']
+        predicted_lst = results['val_predictions']
+        label_names = results['label_names']
+        cls_report_dict = classification_report(y_true=labels_lst, y_pred=predicted_lst, digits=7,
+                                                target_names=label_names, output_dict=True)
+        accuracy = cls_report_dict['accuracy']
+        macro_precision = cls_report_dict['macro avg']['precision']
+        macro_recall = cls_report_dict['macro avg']['recall']
+        macro_f1 = cls_report_dict['macro avg']['f1-score']
+        accuracy_lst.append(accuracy)
+        macro_precision_lst.append(macro_precision)
+        macro_recall_lst.append(macro_recall)
+        macro_f1_lst.append(macro_f1)
+    _mean_std_across_folds(accuracy_lst, macro_precision_lst, macro_recall_lst, macro_f1_lst, h5_base_path, num_average_files, metric_name, logger)
+    
 

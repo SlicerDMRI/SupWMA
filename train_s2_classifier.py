@@ -1,7 +1,10 @@
+from __future__ import print_function
 import argparse
 import os
+import random
 import time
 import h5py
+import numpy as np
 import pickle
 
 import torch
@@ -10,12 +13,15 @@ import torch.optim as optim
 import torch.utils.data
 import torch.nn.functional as F
 
+# in order to import modules from pointnet folder
 from utils.dataset import ORGDataset
 from utils.model_supcon import PointNet_SupCon, PointNet_Classifier
 from utils.logger import create_logger
 from utils.metrics_plots import classify_report, per_class_metric, process_curves
-from utils.metrics_plots import calculate_prec_recall_f1, best_swap, save_best_weights, gen_199_classify_report, calculate_average_metric
-from utils.funcs import fix_seed, unify_path, makepath
+from utils.metrics_plots import calculate_prec_recall_f1, best_swap, save_best_weights, gen_199_classify_report
+from eval import kfold_evaluate_two_stage_contrastive_model
+from utils.funcs import unify_path, makepath, fix_seed
+
 
 # GPU check
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -80,11 +86,13 @@ def train_val_net(supcon_net, classify_net):
     best_acc_val_pred_lst, best_f1_val_pred_lst = [], []
     for epoch in range(args.epoch):
         train_start_time = time.time()
+        # epoch starts from 1
         epoch += 1
         total_train_loss, total_val_loss = 0, 0
         train_labels_lst, train_predicted_lst = [], []
         total_train_correct, total_val_correct = 0, 0
         val_labels_lst, val_predicted_lst = [], []
+
         # training
         for i, data in enumerate(train_loader, 0):
             points, label = data  # points [B, N, 3]
@@ -127,8 +135,8 @@ def train_val_net(supcon_net, classify_net):
         train_f1_lst.append(mac_train_f1)
         train_end_time = time.time()
         train_time = round(train_end_time - train_start_time, 2)
-        logger.info('epoch [{}/{}] time: {}s train loss: {} accuracy: {} f1: {}'.format(
-            epoch, args.epoch, train_time, round(avg_train_loss, 4), round(avg_train_acc, 4), round(mac_train_f1, 4)))
+        logger.info('{} epoch [{}/{}] time: {}s train loss: {} accuracy: {} f1: {}'.format(
+            script_name, epoch, args.epoch, train_time, round(avg_train_loss, 4), round(avg_train_acc, 4), round(mac_train_f1, 4)))
 
         # validation
         with torch.no_grad():
@@ -165,8 +173,8 @@ def train_val_net(supcon_net, classify_net):
         val_f1_lst.append(mac_val_f1)
         val_end_time = time.time()
         val_time = round(val_end_time - val_start_time, 2)
-        logger.info('epoch [{}/{}] time: {}s val loss: {} accuracy: {} f1: {}'.format(
-            epoch, args.epoch, val_time, round(avg_val_loss, 4), round(avg_val_acc, 4), round(mac_val_f1, 4)))
+        logger.info('{} epoch [{}/{}] time: {}s val loss: {} accuracy: {} f1: {}'.format(
+            script_name, epoch, args.epoch, val_time, round(avg_val_loss, 4), round(avg_val_acc, 4), round(mac_val_f1, 4)))
         # swap and save the best metric
         if avg_val_acc > best_acc:
             best_acc, best_acc_epoch, best_acc_wts, best_acc_val_labels_lst, best_acc_val_pred_lst = \
@@ -174,7 +182,7 @@ def train_val_net(supcon_net, classify_net):
         if mac_val_f1 > best_f1_mac:
             best_f1_mac, best_f1_epoch, best_f1_wts, best_f1_val_labels_lst, best_f1_val_pred_lst = \
                 best_swap(mac_val_f1, epoch, classify_net, val_labels_lst, val_predicted_lst)
-    # debug the learning rate schedule:
+
     # save best weights
     save_best_weights(classify_net, best_acc_wts, args.out_path, 'acc', best_acc_epoch, best_acc, logger)
     save_best_weights(classify_net, best_f1_wts, args.out_path, 'f1', best_f1_epoch, best_f1_mac, logger)
@@ -202,21 +210,20 @@ def train_val_net(supcon_net, classify_net):
     time_end = time.time()
     total_time = round(time_end - time_start, 2)
     logger.info('Total processing time is {}s'.format(total_time))
-
+    
 
 if __name__ == '__main__':
     # Variable Space
-    parser = argparse.ArgumentParser(description="Train and evaluate a model",
-                                     epilog="Referenced from https://github.com/fxia22/pointnet.pytorch"
-                                            "by Tengfei Xue txue4133@uni.sydney.edu.au")
+    parser = argparse.ArgumentParser(description="Train classification model in stage 2, and evaluate on validation data for entire 1 million streamlines",
+                                     epilog="by Tengfei Xue txue4133@uni.sydney.edu.au")
     # Paths
-    parser.add_argument('--input_path', type=str, required=True, default='./TrainData/outliers_data/DEBUG_kp0.1/h5_np15/',
-                        help='Input training data and labels')
-    parser.add_argument('--out_path_base', type=str, required=True, default='./ModelWeights',
-                        help='Save trained models')
+    parser.add_argument('--input_path', type=str, required=True, help='Input training data and labels')
+    parser.add_argument('--out_path_base', type=str, required=True, default='./ModelWeights', help='Save trained models')
 
     # evaluation params
+    parser.add_argument('--input_eval_data_path', type=str, default='./', help='Input entire data (all 1 million streamlines) for evaluation ')
     parser.add_argument('--best_metric', type=str, default='f1', help='evaluation metric')
+    parser.add_argument('--stage1_weight_path_base', type=str, required=True, default='', help='stage1 trained weight path')
     parser.add_argument('--supcon_epoch', type=int, default=150, required=True, help='The epoch of encoder model')
 
     # parameters
@@ -234,10 +241,9 @@ if __name__ == '__main__':
     parser.add_argument('--train_batch_size', type=int, default=128, help='batch size')
     parser.add_argument('--val_batch_size', type=int, default=128, help='batch size')
     parser.add_argument('--epoch', type=int, default=10, help='the number of epochs')
-    parser.add_argument('--save_step', type=int, default=5, help='The interval of saving weights')
-    parser.add_argument('--redistribute_class', default=False, action='store_true',
-                        help="redistribute classes to 199 classes when generate classification reports")
-    parser.add_argument('--eval_fold_zero', default=False, action='store_true', help='use fold 1st in classifier no matter what encoder uses')
+    parser.add_argument('--eval_fold_zero', default=False, action='store_true', help='eval on fold 0, train on fold 1 2 3 4')
+    parser.add_argument('--redistribute_class', default=False, action='store_true', help="redistribute classes to 199 classes when generate reports")
+   
 
     args = parser.parse_args()
 
@@ -245,23 +251,30 @@ if __name__ == '__main__':
     print("Random Seed: ", args.manualSeed)
     fix_seed(args.manualSeed)
 
-    script_name = '<train>'
+    script_name = '<train_stage2_classifier>'
 
     args.input_path = unify_path(args.input_path)
+    args.input_eval_data_path = unify_path(args.input_eval_data_path)
     args.out_path_base = unify_path(args.out_path_base)
+    args.stage1_weight_path_base = unify_path(args.stage1_weight_path_base)
 
-    assert 'encoder' + str(args.supcon_epoch) == str(args.out_path_base.split('/')[-1].split('epoch')[0])
+    if args.eval_fold_zero:
+        fold_lst = [0]
+    else:
+        fold_lst = [i for i in range(args.k_fold)]
 
     # eval on the entire data
-    with open(os.path.join(*args.out_path_base.split('/')[:-1], 'encoder_params.pickle'), 'rb') as f:
+    with open(os.path.join(args.stage1_weight_path_base, 'stage1_params.pickle'), 'rb') as f:  # stage 1
+        stage1_params = pickle.load(f)
+        f.close()
+    with open(os.path.join(*args.out_path_base.split('/')[:-1], 'encoder_params.pickle'), 'rb') as f: # stage 2, encoder with contrastive learning
         encoder_params = pickle.load(f)
         f.close()
 
     if args.eval_fold_zero:
+        # force classifier to only train on fold 1
         encoder_params['fold_lst'] = [0]
-
     fold_lst = encoder_params['fold_lst']
-
     for num_fold in fold_lst:
         num_fold = num_fold + 1
         args.out_path = os.path.join(args.out_path_base, str(num_fold))
@@ -275,9 +288,9 @@ if __name__ == '__main__':
         logger.info('Implement {} fold experiment'.format(num_fold))
         # load data
         train_loader, val_loader, label_names, \
-        num_classes, train_data_size, val_data_size = load_data()
+            num_classes, train_data_size, val_data_size = load_data()
 
-        # encoder setting and parameters must be keep the same as train_contrastive_backup.py
+        # model setting
         supcon_model = PointNet_SupCon(head=encoder_params['head_name'], feat_dim=encoder_params['encoder_feat_num'])
 
         # encoder weight path base
@@ -291,31 +304,30 @@ if __name__ == '__main__':
 
         # optimizers
         if args.opt == 'Adam':
-            optimizer = optim.Adam(classifier.parameters(), lr=args.lr, betas=(0.9, 0.999),
-                                   weight_decay=args.weight_decay)
+            optimizer = optim.Adam(classifier.parameters(), lr=args.lr, betas=(0.9, 0.999), weight_decay=args.weight_decay)
         elif args.opt == 'SGD':
-            optimizer = optim.SGD(classifier.parameters(), lr=args.lr, momentum=args.momentum,
-                                  weight_decay=args.weight_decay)
+            optimizer = optim.SGD(classifier.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
         else:
-            raise ValueError('Please input valid optimizers Adam | SGD')
-
+            optimizer = None
+            exit()
+            
         # schedulers
         if args.scheduler == 'step':
             scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=args.step_size, gamma=args.decay_factor)
         elif args.scheduler == 'wucd':
             scheduler = optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, T_0=args.T_0, T_mult=args.T_mult)
         else:
-            raise ValueError('Please input valid schedulers step | wucd')
+            scheduler = None
+            exit()
 
         supcon_model.to(device)
         classifier.to(device)
-
         # train and eval net
         train_val_net(supcon_model, classifier)
 
     # clean the logger
     logger.handlers.clear()
 
-    # average metric
-    num_files = len(fold_lst)
-    calculate_average_metric(args.out_path_base, num_files, args.best_metric, args.redistribute_class)
+    # use the entire data (1 million streamlines) for evaluation
+    args.input_path = args.input_eval_data_path
+    kfold_evaluate_two_stage_contrastive_model(stage1_params, encoder_params, args, device, 'evaluate_net')

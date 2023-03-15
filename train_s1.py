@@ -1,5 +1,6 @@
 import argparse
 import os
+import pickle
 import time
 import h5py
 
@@ -125,8 +126,8 @@ def train_val_net(net):
         train_f1_lst.append(mac_train_f1)
         train_end_time = time.time()
         train_time = round(train_end_time-train_start_time, 2)
-        logger.info('epoch [{}/{}] time: {}s train loss: {} accuracy: {} f1: {}'.format(
-            epoch, args.epoch, train_time, round(avg_train_loss, 4), round(avg_train_acc, 4), round(mac_train_f1, 4)))
+        logger.info('{} epoch [{}/{}] time: {}s train loss: {} accuracy: {} f1: {}'.format(
+            script_name, epoch, args.epoch, train_time, round(avg_train_loss, 4), round(avg_train_acc, 4), round(mac_train_f1, 4)))
 
         # validation
         with torch.no_grad():
@@ -161,8 +162,8 @@ def train_val_net(net):
         val_f1_lst.append(mac_val_f1)
         val_end_time = time.time()
         val_time = round(val_end_time-val_start_time, 2)
-        logger.info('epoch [{}/{}] time: {}s val loss: {} accuracy: {} f1: {}'.format(
-            epoch, args.epoch, val_time, round(avg_val_loss, 4), round(avg_val_acc, 4), round(mac_val_f1, 4)))
+        logger.info('{} epoch [{}/{}] time: {}s val loss: {} accuracy: {} f1: {}'.format(
+            script_name, epoch, args.epoch, val_time, round(avg_val_loss, 4), round(avg_val_acc, 4), round(mac_val_f1, 4)))
         # swap and save the best metric
         if avg_val_acc > best_acc:
             best_acc, best_acc_epoch, best_acc_wts, best_acc_val_labels_lst, best_acc_val_pred_lst = \
@@ -200,7 +201,7 @@ def train_val_net(net):
 
 if __name__ == '__main__':
     # Variable Space
-    parser = argparse.ArgumentParser(description="Train and evaluate a model",
+    parser = argparse.ArgumentParser(description="Train stage 1 model",
                                      epilog="by Tengfei Xue txue4133@uni.sydney.edu.au")
     # Paths
     parser.add_argument('--input_path', type=str, default='./TrainData/outliers_data/DEBUG_kp0.1/h5_np15/',
@@ -234,7 +235,7 @@ if __name__ == '__main__':
     print("Random Seed: ", args.manualSeed)
     fix_seed(args.manualSeed)
 
-    script_name = '<train>'
+    script_name = '<train_stage1>'
 
     args.input_path = unify_path(args.input_path)
     args.out_path_base = unify_path(args.out_path_base)
@@ -284,6 +285,13 @@ if __name__ == '__main__':
     # clean the logger
     logger.handlers.clear()
 
+    # Generate .pickle file of stage 1 parameters
+    num_swm_stage1 = len([name.decode() for name in label_names if 'swm' in name.decode()])
+    stage1_params_dict = {'stage1_num_class': num_classes, 'num_swm_stage1': num_swm_stage1, 'fold_lst': fold_lst}
+    with open(os.path.join(args.out_path_base, 'stage1_params.pickle'), 'wb') as f:
+        pickle.dump(stage1_params_dict, f, protocol=pickle.HIGHEST_PROTOCOL)
+        f.close()
+    
     # average metric
     num_files = len(fold_lst)
     calculate_average_metric(args.out_path_base, num_files, args.best_metric, args.redistribute_class)

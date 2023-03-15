@@ -103,8 +103,8 @@ def train_val_net(net):
         train_loss_lst.append(avg_train_loss)
         train_end_time = time.time()
         train_time = round(train_end_time-train_start_time, 2)
-        logger.info('epoch [{}/{}] time: {}s train loss: {} '.format(
-            epoch, args.epoch, train_time, round(avg_train_loss, 4)))
+        logger.info('{} epoch [{}/{}] time: {}s train loss: {} '.format(
+            script_name, epoch, args.epoch, train_time, round(avg_train_loss, 4)))
         # save weights regularly
         if epoch % args.save_step == 0:
             torch.save(net.state_dict(), '{}/epoch_{}_model.pth'.format(args.out_path, epoch))
@@ -122,9 +122,8 @@ def train_val_net(net):
 
 if __name__ == '__main__':
     # Variable Space
-    parser = argparse.ArgumentParser(description="Train and evaluate a model",
-                                     epilog="Referenced from https://github.com/fxia22/pointnet.pytorch"
-                                            "by Tengfei Xue txue4133@uni.sydney.edu.au")
+    parser = argparse.ArgumentParser(description="Train contrastive encoder in stage 2",
+                                     epilog="Tengfei Xue txue4133@uni.sydney.edu.au")
     # Paths
     parser.add_argument('--input_path', type=str, default='./TrainData/outliers_data/DEBUG_kp0.1/h5_np15/',
                         help='Input graph data and labels')
@@ -161,7 +160,7 @@ if __name__ == '__main__':
     print("Random Seed: ", args.manualSeed)
     fix_seed(args.manualSeed)
 
-    script_name = '<train>'
+    script_name = '<train_stage2_encoder>'
 
     args.input_path = unify_path(args.input_path)
     args.out_path_base = unify_path(args.out_path_base)
