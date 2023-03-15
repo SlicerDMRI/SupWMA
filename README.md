@@ -1,7 +1,7 @@
 # Overview
 *---You are on master branch---*
 
-This repository has two branches: [master](https://github.com/SlicerDMRI/SupWMA/blob/master) and [MedIA](https://github.com/SlicerDMRI/SupWMA/blob/MedIA). **master** branch is for our work at [ISBI 2022](https://arxiv.org/abs/2201.12528) (finalist for best paper award). **MedIA** branch is for our work at [Medical Image Analysis](https://arxiv.org/abs/2207.08975).
+This repository has two branches: [master](https://github.com/SlicerDMRI/SupWMA/tree/master) and [MedIA](https://github.com/SlicerDMRI/SupWMA/tree/MedIA). **master** branch is for our work at [ISBI 2022](https://arxiv.org/abs/2201.12528) (finalist for best paper award). **MedIA** branch is for our work at [Medical Image Analysis](https://arxiv.org/abs/2207.08975).
 * Superficial white matter parcellation on real data: if you want to use our pre-trained model to parcellate your own data, please use [SupWMA_TwoStage.sh](https://github.com/SlicerDMRI/SupWMA/blob/MedIA/SupWMA_TwoStage.sh) in **MedIA** branch. It provides the two-stage SupWMA model trained with contrastive learning.
 * Train your own model: You can start with **master** branch, where it provides code for one-stage training with and without contrastive learning. If you are also interested in two-stage training, you can check training code in **MedIA** branch.
 
