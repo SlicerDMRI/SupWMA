@@ -10,7 +10,7 @@ This repository has two branches: [master](https://github.com/SlicerDMRI/SupWMA/
 
 This repository releases the source code, pre-trained model and testing sample for the work, "Superficial White Matter Analysis: An Efficient Point-cloud-based Deep Learning Framework with Supervised Contrastive Learning for Consistent Tractography Parcellation across Populations and dMRI Acquisitions", which is accepted by Medical Image Analysis.
 
-![Overview_v2](https://drive.google.com/file/d/1j36KH1ospwZ4-8Nli23_Ue0g-mIiiFwm/view?usp=share_link)
+![Overview_v2](https://user-images.githubusercontent.com/56477109/225226208-e5eea434-29b6-40b9-9ace-8e8f5e1b224c.png)
 
 ## License
 
