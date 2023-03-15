@@ -6,7 +6,7 @@ This repository has two branches: [master](https://github.com/SlicerDMRI/SupWMA/
 * Train your own model: You can start with **master** branch, where it provides code for one-stage training with and without contrastive learning. If you are also interested in two-stage training, you can check training code in **MedIA** branch. 
 
 
-# Superficial White Matter Analysis (SupWMA)
+# SupWMA -- MedIA
 
 This repository releases the source code, pre-trained model and testing sample for the work, "Superficial White Matter Analysis: An Efficient Point-cloud-based Deep Learning Framework with Supervised Contrastive Learning for Consistent Tractography Parcellation across Populations and dMRI Acquisitions", which is accepted by Medical Image Analysis.
 
