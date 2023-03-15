@@ -5,7 +5,7 @@ This repository has two branches: [master](https://github.com/SlicerDMRI/SupWMA/
 * Superficial white matter parcellation on real data: if you want to use our pre-trained model to parcellate your own data, please use [SupWMA_TwoStage.sh](https://github.com/SlicerDMRI/SupWMA/blob/MedIA/SupWMA_TwoStage.sh) in **MedIA** branch. It provides the two-stage SupWMA model trained with contrastive learning.
 * Train your own model: You can start with **master** branch, where it provides code for one-stage training with and without contrastive learning. If you are also interested in two-stage training, you can check training code in **MedIA** branch.
 
-# Superficial White Matter Analysis (SupWMA) -- ISBI
+# SupWMA -- ISBI
 
 This repository releases the source code, pre-trained model and testing sample for the work, "SupWMA: consistent and efficient tractography parcellation of superficial white matter with deep learning," which is accepted by the ISBI 2022 (finalist for best paper award).
 
