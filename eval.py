@@ -141,14 +141,8 @@ def kfold_evaluate_two_stage_contrastive_model(stage1_params, encoder_params, ar
 
         # load model
         # model setting
-        if stage1_params['not_first_feature_transform']:
-            stage1_model = PointNetCls(k=stage1_params['stage1_num_class']).to(device)
-        else:
-            stage1_model = PointNetCls(k=stage1_params['stage1_num_class']).to(device)
-        if encoder_params['not_first_feature_transform']:
-            stage2_encoder = PointNet_SupCon(head=encoder_params['head_name'], feat_dim=encoder_params['encoder_feat_num']).to(device)
-        else:
-            stage2_encoder = PointNet_SupCon(head=encoder_params['head_name'], feat_dim=encoder_params['encoder_feat_num']).to(device)
+        stage1_model = PointNetCls(k=stage1_params['stage1_num_class']).to(device)
+        stage2_encoder = PointNet_SupCon(head=encoder_params['head_name'], feat_dim=encoder_params['encoder_feat_num']).to(device)
         stage2_classifer = PointNet_Classifier(num_classes=encoder_params['stage2_num_class']).to(device)
 
         # load weights
