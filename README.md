@@ -2,7 +2,7 @@
 *---You are on ISBI branch---*
 
 This repository has two branches: [main](https://github.com/SlicerDMRI/SupWMA/tree/main) and [ISBI](https://github.com/SlicerDMRI/SupWMA/tree/ISBI). **main** branch is for our work at [Medical Image Analysis](https://arxiv.org/abs/2207.08975). **ISBI** branch is for our work at [ISBI 2022](https://arxiv.org/abs/2201.12528) (finalist for best paper award). 
-* Superficial white matter parcellation on real data: if you want to use our pre-trained model to parcellate your own data, please use [SupWMA_TwoStage.sh](https://github.com/SlicerDMRI/SupWMA/blob/main/SupWMA_TwoStage.sh) in **main** branch. It provides the two-stage SupWMA model trained with contrastive learning.
+* Superficial white matter parcellation on real data: if you want to use our pre-trained model to parcellate your own data, please use [SupWMA_TwoStage.sh](https://github.com/SlicerDMRI/SupWMA/blob/main/SupWMA_TwoStage.sh) in **main** branch. It provides the two-stage SupWMA model trained with contrastive learning. Please follow the instruction [here](https://github.com/SlicerDMRI/SupWMA#test-swm-parcellation).
 * Train your own model: You can start with **ISBI** branch, where it provides code for one-stage training with and without contrastive learning. If you are also interested in two-stage training, you can check training code in **main** branch. 
 
 # SupWMA -- ISBI
