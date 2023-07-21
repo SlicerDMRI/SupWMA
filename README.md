@@ -33,7 +33,7 @@ The contents of this repository are released under an [Slicer](LICENSE) license.
 
 ## Train two-stage model with contrastive learning
 Train with our dataset
-1. Download `TrainData_TwoStage.zip` (https://github.com/SlicerDMRI/SupWMA-TrainingData/releases) and `tar -xzvf TrainData_TwoStage.zip`
+1. Download `TrainData_TwoStage.zip` (https://github.com/SlicerDMRI/SupWMA-TrainingData/releases) to `./`, and `tar -xzvf TrainData_TwoStage.zip`
 2. Run `sh train_supwma_s1.sh && sh train_supwma_s2.sh`
 
 ## Train using your custom dataset
