@@ -33,12 +33,12 @@ The contents of this repository are released under an [Slicer](LICENSE) license.
 
 ## Train without contrastive learning
 Train with our dataset
-1. Download `TrainData.zip` (https://github.com/SlicerDMRI/SupWMA-TrainingData/releases) to `./`, and `tar -xzvf TrainData.zip`
+1. Download `TrainData.tar.gz` (https://github.com/SlicerDMRI/SupWMA-TrainingData/releases) to `./`, and `tar -xzvf TrainData.tar.gz`
 2. Run `sh train_supwma_without_supcon.sh`
 
 ## Train with contrastive learning
 Train with our dataset
-1. Download `TrainData.zip` (https://github.com/SlicerDMRI/SupWMA-TrainingData/releases) to `./`, and `tar -xzvf TrainData.zip`
+1. Download `TrainData.tar.gz` (https://github.com/SlicerDMRI/SupWMA-TrainingData/releases) to `./`, and `tar -xzvf TrainData.tar.gz`
 2. Run `sh train_supwma_with_supcon.sh`
 
 ## Train using your custom dataset
@@ -56,8 +56,8 @@ We calculated the accuracy, precision, recall and f1 on 198 swm clusters and one
 ## Test (SWM parcellation)
 Highly recommended to use [SupWMA_TwoStage.sh](https://github.com/SlicerDMRI/SupWMA/blob/main/SupWMA_TwoStage.sh) in [main](https://github.com/SlicerDMRI/SupWMA/tree/main) branch (two-stage with contrastive learning) to parcellate your own data.
 1. Install 3D Slicer (https://www.slicer.org) and SlicerDMRI (http://dmri.slicer.org).
-2. Download `TrainedModels.zip` (https://github.com/SlicerDMRI/SupWMA/releases) to `./`, and `tar -xzvf TrainedModel.zip`
-3. Download `TestData.zip` (https://github.com/SlicerDMRI/SupWMA/releases) to the `./`, and `tar -xzvf TestData.zip`
+2. Download `TrainedModels.tar.gz` (https://github.com/SlicerDMRI/SupWMA/releases) to `./`, and `tar -xzvf TrainedModel.tar.gz`
+3. Download `TestData.tar.gz` (https://github.com/SlicerDMRI/SupWMA/releases) to the `./`, and `tar -xzvf TestData.tar.gz`
 4. Run `sh SupWMA.sh`
 
 ## Test parcellation Results
